@@ -9,9 +9,6 @@ on:
     tags-ignore:
       - '**'
 
-env:
-  CI: true
-
 jobs:
   build:
 
