@@ -19,10 +19,21 @@ jobs:
           node-version: ${{ matrix.node-version }}
         env:
           CI: true
-      - name: Slack notification
+      - name: Notify build success to slack
+        if: success()
         env:
           SLACK_WEBHOOK: ${{ secrets.ACCESS_TOKEN }}
-          SLACK_USERNAME: ThisIsMyUsername # Optional. (defaults to webhook app)
-          SLACK_CHANNEL: general # Optional. (defaults to webhook)
-          SLACK_AVATAR: repository # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
+          SLACK_USERNAME: 'gardner'
+          SLACK_CHANNEL: '#notifications'
+          SLACK_AVATAR: repository
+          SLACK_COLOR: success
+        uses: Ilshidur/action-slack@2.0.2
+      - name: Notify build failure to slack
+        if: failure()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.ACCESS_TOKEN }}
+          SLACK_USERNAME: 'gardner'
+          SLACK_CHANNEL: '#notifications'
+          SLACK_AVATAR: repository
+          SLACK_COLOR: fail
         uses: Ilshidur/action-slack@2.0.2
