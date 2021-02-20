@@ -4,7 +4,6 @@ on: [push]
 
 env:
   CI: true
-  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
 jobs:
   build:
@@ -22,18 +21,26 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-
-      - name: Slack notification FAILED
-        uses: Ilshidur/action-slack@2.1.0
+      - name: Notify build failure to slack
+        uses: rtCamp/action-slack-notify@v2
         if: failure()
         env:
-          SLACK_AVATAR: sender # optional: repository, sender or ImageURL
-          SLACK_CHANNEL: '#notifications'
-        with:
-          args: "Lint checks *FAILED* for {{GITHUB_REPOSITORY}}*\nYo {{GITHUB_ACTOR}} see why at <{{GITHUB_SERVER_URL}}/{{GITHUB_REPOSITORY}}/commit/{{GITHUB_SHA}}/checks|action logs>"
+          SLACK_CHANNEL: notifications
+          SLACK_COLOR: fail
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Post Content :rocket:'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: gardener
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
-      - name: Slack notification SUCCESS
-        uses: Ilshidur/action-slack@2.1.0
+      - name: Notify build success to slack
+        uses: rtCamp/action-slack-notify@v2
         if: success()
-        with:
-          args: "Lint checks *SUCCESSFUL!*\nfrom {{ GITHUB_ACTOR }} at {{ GITHUB_REPOSITORY }}"
+        env:
+          SLACK_CHANNEL: notifications
+          SLACK_COLOR: success
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Post Content :rocket:'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: gardener
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
